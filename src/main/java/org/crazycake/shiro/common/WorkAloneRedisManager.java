@@ -3,8 +3,8 @@ package org.crazycake.shiro.common;
 import org.crazycake.shiro.IRedisManager;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +65,7 @@ public abstract class WorkAloneRedisManager implements IRedisManager {
      * @return value
      */
     @Override
-    public byte[] set(byte[] key, byte[] value, int expireTime) {
+    public byte[] set(byte[] key, byte[] value, long expireTime) {
         if (key == null) {
             return null;
         }
