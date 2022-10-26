@@ -113,7 +113,7 @@ public class RedisClusterManager implements IRedisManager {
     private long getDbSizeFromClusterNode(ConnectionPool connectionPool, byte[] pattern) {
         long dbSize = 0L;
         Connection connection = connectionPool.getResource();
-
+        Jedis jedis = new Jedis(connection);
         try {
             ScanParams params = new ScanParams();
             params.count(count);
@@ -121,12 +121,12 @@ public class RedisClusterManager implements IRedisManager {
             byte[] cursor = ScanParams.SCAN_POINTER_START_BINARY;
             ScanResult<byte[]> scanResult;
             do {
-                scanResult = getJedisCluster().scan(cursor, params);
+                scanResult = jedis.scan(cursor, params);
                 dbSize++;
                 cursor = scanResult.getCursorAsBytes();
             } while (scanResult.getCursor().compareTo(ScanParams.SCAN_POINTER_START) > 0);
         } finally {
-            connection.close();
+            jedis.close();
         }
         return dbSize;
     }
@@ -151,7 +151,7 @@ public class RedisClusterManager implements IRedisManager {
     private Set<byte[]> getKeysFromClusterNode(ConnectionPool connectionPool, byte[] pattern) {
         Set<byte[]> keys = new HashSet<byte[]>();
         Connection connection = connectionPool.getResource();
-
+        Jedis jedis = new Jedis(connection);
         try {
             ScanParams params = new ScanParams();
             params.count(count);
@@ -159,12 +159,12 @@ public class RedisClusterManager implements IRedisManager {
             byte[] cursor = ScanParams.SCAN_POINTER_START_BINARY;
             ScanResult<byte[]> scanResult;
             do {
-                scanResult = getJedisCluster().scan(cursor, params);
+                scanResult = jedis.scan(cursor, params);
                 keys.addAll(scanResult.getResult());
                 cursor = scanResult.getCursorAsBytes();
             } while (scanResult.getCursor().compareTo(ScanParams.SCAN_POINTER_START) > 0);
         } finally {
-            connection.close();
+            jedis.close();
         }
         return keys;
     }
